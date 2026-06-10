@@ -1,0 +1,80 @@
+apiVersion: backstage.io/v1alpha1
+kind: Component
+metadata:
+  name: my-rest-api-358
+  description: Python FastAPI REST API service – my-rest-api-358
+  annotations:
+    # Argo CD – app-name is the Application CR; instance-name matches the template form
+    argocd/app-name: my-rest-api-358
+    argocd/instance-name: default
+    # Kubernetes integration (shows Pods/Deployments tab)
+    backstage.io/kubernetes-id: my-rest-api-358
+    backstage.io/kubernetes-namespace: my-rest-api
+    # Tekton integration (shows PipelineRuns tab)
+    janus-idp.io/tekton-enabled: "true"
+    janus-idp.io/tekton-namespace: my-rest-api
+    # Dev Spaces – devfile in the code repo
+    che.eclipse.org/devfile-url: https://github.com/rhdh-developers/my-rest-api-358-code/blob/main/.devfile.yaml
+    # Source code location for Backstage
+    backstage.io/source-location: url:https://github.com/rhdh-developers/my-rest-api-358-code
+    # GitHub repos for SCM links
+    github.com/project-slug: rhdh-developers/my-rest-api-358-code
+  links:
+    - url: https://github.com/rhdh-developers/my-rest-api-358-code
+      title: Source Code (GitHub)
+      icon: github
+    - url: https://github.com/rhdh-developers/my-rest-api-358-k8
+      title: Deployment Manifests (GitHub)
+      icon: github
+    - url: https://my-rest-api-358.demo.leonlevy.lol/api/v1/
+      title: API Endpoint
+      icon: api
+    - url: https://my-rest-api-358.demo.leonlevy.lol/docs
+      title: API Docs
+      icon: api
+    - url: https://devspaces.apps.cluster-g2rhb.g2rhb.sandbox2121.opentlc.com/?storageType=per-workspace#https://github.com/rhdh-developers/my-rest-api-358-code
+      title: OpenShift Dev Spaces
+      icon: web
+spec:
+  type: service
+  lifecycle: experimental
+  owner: group:default/rhdh-devs
+  providesApis:
+    - my-rest-api-358-api
+---
+apiVersion: backstage.io/v1alpha1
+kind: API
+metadata:
+  name: my-rest-api-358-api
+  description: OpenAPI spec for the my-rest-api-358 FastAPI service
+spec:
+  type: openapi
+  lifecycle: experimental
+  owner: group:default/rhdh-devs
+  definition: |
+    openapi: 3.1.0
+    info:
+      title: my-rest-api-358
+      description: FastAPI REST API service scaffolded by RHDH
+      version: 0.1.0
+    paths:
+      /api/v1/hello:
+        get:
+          summary: Hello
+          operationId: hello_api_v1_hello_get
+          responses:
+            "200":
+              description: Successful Response
+              content:
+                application/json:
+                  schema: {}
+      /health:
+        get:
+          summary: Health
+          operationId: health_health_get
+          responses:
+            "200":
+              description: Successful Response
+              content:
+                application/json:
+                  schema: {}

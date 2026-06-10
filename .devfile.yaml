@@ -1,0 +1,41 @@
+schemaVersion: 2.2.2
+metadata:
+  name: my-rest-api-358
+components:
+  - name: python
+    container:
+      image: registry.redhat.io/devspaces/udi-rhel9:3.28.2
+      volumeMounts:
+        - name: venv
+          path: /home/user/.venv
+      memoryLimit: '2Gi'
+      memoryRequest: '1Gi'
+      cpuLimit: '2'
+      cpuRequest: '1'
+      mountSources: true
+  - name: venv
+    volume:
+      size: 1G
+events:
+  postStart:
+    - setup
+commands:
+  - id: setup
+    exec:
+      label: "Setup environment"
+      component: python
+      workingDir: ${PROJECTS_ROOT}/my-rest-api-358-code
+      commandLine: |
+        python -m venv .venv
+        . .venv/bin/activate
+        pip install -r requirements.txt
+        grep -qxF 'cd $PROJECTS_ROOT/my-rest-api-358-code && . .venv/bin/activate' /home/user/.bashrc || echo 'cd $PROJECTS_ROOT/my-rest-api-358-code && . .venv/bin/activate' >> /home/user/.bashrc
+  - id: run
+    exec:
+      label: "Run the application"
+      component: python
+      workingDir: ${PROJECTS_ROOT}/my-rest-api-358-code
+      commandLine: . .venv/bin/activate && uvicorn main:app --reload --host 0.0.0.0 --port 8000
+      group:
+        kind: run
+        isDefault: true
